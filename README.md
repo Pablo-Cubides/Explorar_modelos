@@ -61,3 +61,22 @@ Nota: no puedo cambiar la visibilidad por ti desde aquí (requiere tu cuenta/per
 Pequeño texto profesional para usar en CV/Readme (opcional):
 "ExploraModelo — frontend educativo en Next.js construido para demostraciones reproducibles. CI automatizado con GitHub Actions publica imágenes Docker en GHCR para despliegue y pruebas locales; despliegue de frontend en Vercel. Ideal para workshops y evaluaciones técnicas."
 
+Verificación: imagen GHCR pública (comprobada)
+------------------------------------------------
+He verificado que la imagen publicada en GHCR está accesible y funciona localmente. Resumen de la comprobación local:
+
+Comandos ejecutados (PowerShell):
+```powershell
+$img = 'ghcr.io/pablo-cubides/exploramodelo:docker'
+docker pull $img
+docker run --rm -d -p 127.0.0.1:3000:3000 --name exploramodelo $img
+docker ps -a
+docker logs exploramodelo
+```
+
+Resultado: la imagen se descargó correctamente y el contenedor arrancó, exponiendo la app en http://127.0.0.1:3000.
+
+Notas rápidas:
+- Asegúrate de escribir el owner en minúsculas (`pablo-cubides`) cuando uses `ghcr.io`.
+- Si tienes problemas con `docker pull`, comprueba el nombre y el tag del paquete en GitHub → Packages o autentica con un PAT que incluya `read:packages`.
+

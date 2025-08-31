@@ -1,0 +1,35 @@
+# Node / Next
+node_modules/
+.next/
+.vercel/
+dist/
+out/
+npm-debug.log*
+yarn-error.log*
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Python (if reintroduced later)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+
+# Env
+.env
+.env.*node_modules/
+dist/
+.venv/
+__pycache__/
+.env
+.DS_Store
+frontend/.next/
+frontend/node_modules/
+backend/.venv/
+backend/__pycache__/

@@ -1,32 +1,59 @@
 ExploraModelo
 
-Proyecto educativo (solo frontend) que muestra cómo cambia la sensación de la respuesta al variar parámetros de decodificación, sin depender de red ni backend.
+Demo educativa (frontend-only) que muestra cómo cambian las salidas al variar parámetros de decodificación (Temperatura, Top‑k, Top‑p, Penalización por repetición). Sin backend ni dependencias de red.
 
-Estado actual:
-- Frontend Next.js 15 + TailwindCSS.
-- Datos embebidos en `app/page.tsx` (no se usa `public/cases.json`).
-- UI enfocada en la respuesta con efecto de tipeo y tema azul.
+Lo interesante (para usuarios y reclutadores)
+- UX enfocada en la respuesta: efecto de tipeo, diseño claro y tema azul.
+- Explicaciones dinámicas de parámetros (2–3 líneas por cada T/K/P/R) para aprendizaje.
+- Datos embebidos: funciona 100% offline; cero llamadas a red.
+- Exportar resultados: PNG (html2canvas) y JSON con los parámetros y variante elegida.
+- Next.js 15 (App Router) + React 18 + Tailwind; build y prerender estático.
 
-Cómo probar localmente (Windows PowerShell):
-- cd frontend
-- npm install
-- npm run build
-- npm run start:host  # inicia en http://127.0.0.1:3000
+Estructura y stack
+- Frontend: `frontend/` (Next.js + Tailwind + TypeScript).
+- Lógica: mapeo determinista de sliders a patrones A–J; casos en `app/page.tsx`.
+- Accesibilidad básica: labels/aria en inputs; UI responsive.
 
-Notas:
-- No hay dependencias de backend ni llamadas `fetch`.
-- Para desarrollo en caliente: `npm run dev:host`.
-- Si reintroduces un backend en el futuro, crea la carpeta `backend/` y documenta sus endpoints.
+Cómo usar en local (Windows PowerShell)
+```powershell
+cd frontend
+npm install
+npm run build
+npm run start:host  # abre http://127.0.0.1:3000
+```
+Desarrollo con hot‑reload: `npm run dev:host`.
 
-Ramas de despliegue
-- main: fuente de verdad del código.
-- vercel: rama pensada para desplegar en Vercel (sin Docker).
-- docker (opcional, futura): con Dockerfile/compose para ejecución local o despliegue en hosts de contenedores.
+Ejecutar con Docker (construyendo localmente)
+```powershell
+cd frontend
+docker build -t exploramodelo:local .
+docker run --rm -p 3000:3000 exploramodelo:local
+```
 
-Vercel (sin vercel.json)
-- Al crear el proyecto en Vercel, selecciona Monorepo/Project Settings y establece Root Directory en `frontend/`.
-- Framework: Next.js. Los scripts de `package.json` ya están listos.
-- Despliegue automático al hacer push en la rama `vercel` (o `main` si la eliges).
+Imagen en GHCR (CI en rama `docker`)
+- Al hacer push a la rama `docker`, GitHub Actions construye y publica una imagen en GHCR: `ghcr.io/<owner>/exploramodelo` con tags por rama y SHA.
+- Para hacer pull (si el paquete es público y tienes login a GHCR):
+```powershell
+docker login ghcr.io
+docker pull ghcr.io/Pablo-Cubides/exploramodelo:docker
+docker run --rm -p 3000:3000 ghcr.io/Pablo-Cubides/exploramodelo:docker
+```
+Nota: si no puedes hacer pull, marca el paquete como público en “Packages” del repo/owner.
+
+Despliegue en Vercel (sin vercel.json)
+- Crea el proyecto en Vercel y establece Root Directory = `frontend/`.
+- Framework: Next.js. Rama sugerida: `vercel` (o `main`).
+- La app no necesita variables de entorno ni backend.
+
+Ramas
+- main: fuente de verdad del código y contenido.
+- vercel: pensada para despliegue directo en Vercel (sin Docker).
+- docker: incluye Dockerfile y workflow de CI para GHCR.
+
+Roadmap (corto y útil)
+- Tooltips en sliders y atajos de teclado.
+- Tests ligeros de UI/funcionalidad y CI básico.
+- Demo pública en Vercel lista para compartir en clase.
 
 Rama `vercel`:
 - Esta rama contiene la versión lista para publicar en Vercel (sin Docker). Si quieres que publique automáticamente desde GitHub, conecta esta rama en tu proyecto de Vercel.

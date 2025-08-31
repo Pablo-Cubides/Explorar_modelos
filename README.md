@@ -20,12 +20,13 @@ Notas:
 
 Ramas de despliegue
 - main: fuente de verdad del código.
-- vercel: preparada para despliegue directo en Vercel (sin Docker). Vercel puede apuntar a esta rama.
+- vercel: rama pensada para desplegar en Vercel (sin Docker).
 - docker (opcional, futura): con Dockerfile/compose para ejecución local o despliegue en hosts de contenedores.
 
-Vercel
-- Se incluye `vercel.json` en la raíz para indicar que la app vive en `frontend/`.
-- Pasos: conecta el repo en Vercel y selecciona la rama `vercel` (o `main`), framework Next.js, y despliega.
+Vercel (sin vercel.json)
+- Al crear el proyecto en Vercel, selecciona Monorepo/Project Settings y establece Root Directory en `frontend/`.
+- Framework: Next.js. Los scripts de `package.json` ya están listos.
+- Despliegue automático al hacer push en la rama `vercel` (o `main` si la eliges).
 
 Rama `vercel`:
 - Esta rama contiene la versión lista para publicar en Vercel (sin Docker). Si quieres que publique automáticamente desde GitHub, conecta esta rama en tu proyecto de Vercel.

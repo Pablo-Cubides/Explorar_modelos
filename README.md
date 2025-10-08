@@ -17,66 +17,101 @@ Notas:
 - No hay dependencias de backend ni llamadas `fetch`.
 - Para desarrollo en caliente: `npm run dev:host`.
 - Si reintroduces un backend en el futuro, crea la carpeta `backend/` y documenta sus endpoints.
+# ExploraModelo — README técnico
 
-Ramas de despliegue
-- main: fuente de verdad del código.
-- vercel: rama pensada para desplegar en Vercel (sin Docker).
-- docker (opcional, futura): con Dockerfile/compose para ejecución local o despliegue en hosts de contenedores.
+Resumen breve
+-------------
+Proyecto educativo frontend (Next.js 15, TypeScript, Tailwind) que demuestra cómo cambian las respuestas según parámetros de decodificación. El app es completamente estática en tiempo de ejecución: los datos están embebidos en `frontend/app/page.tsx` y no realiza llamadas de red.
 
-Vercel (sin vercel.json)
-- Al crear el proyecto en Vercel, selecciona Monorepo/Project Settings y establece Root Directory en `frontend/`.
-- Framework: Next.js. Los scripts de `package.json` ya están listos.
-- Despliegue automático al hacer push en la rama `vercel` (o `main` si la eliges).
+Requisitos
+---------
+- Node.js >= 18
+- npm (o pnpm/yarn según preferencias)
+- Docker (opcional, para ejecutar la imagen GHCR)
 
-Rama `vercel`:
-- Esta rama contiene la versión lista para publicar en Vercel (sin Docker). Si quieres que publique automáticamente desde GitHub, conecta esta rama en tu proyecto de Vercel.
+Estructura relevante
+--------------------
+- `frontend/` — app Next.js (app-router). Aquí están `package.json`, `app/`, `public/`.
+- `backend/` — (vacío/optativo) si en el futuro añades microservicios.
+- `.github/workflows/docker-ghcr.yml` — workflow que construye y publica la imagen a GHCR desde la rama `docker`.
 
-GHCR (imagen pública)
-----------------------
-La rama `docker` construye y publica automáticamente una imagen Docker en GitHub Container Registry (GHCR) con etiqueta `ghcr.io/Pablo-Cubides/exploramodelo`.
-
-Estado: la imagen está pensada para ser pública. Si ya ves el paquete en GitHub > Packages y aparece como público, cualquier persona puede hacer:
+Scripts útiles (desde `frontend/`)
+--------------------------------
+- Instalación:
 
 ```powershell
-docker pull ghcr.io/Pablo-Cubides/exploramodelo:docker
-docker run --rm -p 3000:3000 ghcr.io/Pablo-Cubides/exploramodelo:docker
+cd frontend
+npm ci
+```
+
+- Desarrollo (hot-reload, host local):
+
+```powershell
+npm run dev:host   # expone en 127.0.0.1 y puerto configurable
+```
+
+- Build y arranque de producción:
+
+```powershell
+npm run build
+npm run start:host  # arranca Next.js en 127.0.0.1:3000
+```
+
+Notas técnicas de build
+----------------------
+- El build está probado en Windows PowerShell; si hay errores CSS relacionados con PostCSS/autoprefixer, instala las dependencias dev (`postcss`, `autoprefixer`) y vuelve a `npm ci`.
+- La app está diseñada para prerenderizar páginas estáticas y no depende de APIs en tiempo de ejecución.
+
+Docker / GHCR
+-------------
+- Imagen publicada (workflow en rama `docker`):
+
+	ghcr.io/pablo-cubides/exploramodelo:docker
+
+- Pull y ejecución (PowerShell):
+
+```powershell
+$img = 'ghcr.io/pablo-cubides/exploramodelo:docker'
+docker pull $img
+docker run --rm -d -p 127.0.0.1:3000:3000 --name exploramodelo $img
 # abrir http://127.0.0.1:3000
 ```
 
-Qué implica que esté pública (fácil y profesional)
-- Accesibilidad: otros desarrolladores y reclutadores pueden reproducir tu demo con un solo `docker pull`.
-- Transparencia: muestra tu flujo de CI→CD (Actions → Packages), se ve profesional y listo para producción ligera.
-- Seguridad/privacidad: al ser pública, cualquiera puede ejecutar la imagen; si almacenaras secretos o modelos privados, deberías mantenerla privada y usar autenticación para pulls.
+- Cómo funciona el CI: el workflow `.github/workflows/docker-ghcr.yml` detecta pushes a la rama `docker`, ejecuta un build multi-stage y hace push a GHCR con tag `docker` y SHA.
 
-Cómo hacerlo público (si aún no lo está)
-- UI: GitHub → tu repo → Packages → selecciona el paquete `exploramodelo` → Settings → Change visibility → Public.
-- CLI (alternativa):
+Ramas y despliegue
+------------------
+- `main` — código fuente principal.
+- `vercel` — preparada para desplegar en Vercel; al crear el proyecto en Vercel, establece Root Directory = `frontend/`.
+- `docker` — contiene Dockerfile y el workflow que publica la imagen en GHCR.
+
+Seguridad y visibilidad de la imagen
+-----------------------------------
+- Si la imagen está marcada como pública en GitHub Packages, cualquier persona puede hacer `docker pull` sin autenticación.
+- Para hacerlo público desde la interfaz: GitHub → Repo → Packages → seleccionar paquete → Settings → Change visibility → Public.
+- CLI (requiere `gh` auth):
+
 ```powershell
 gh auth login
 gh api -X PATCH /user/packages/container/exploramodelo/visibility -f visibility=public
 ```
 
-Nota: no puedo cambiar la visibilidad por ti desde aquí (requiere tu cuenta/permiso), pero estos pasos son todo lo que hay que hacer.
+Verificación rápida (chequeos que hicimos)
+----------------------------------------
+- `npm run build` (en `frontend/`) → build completado.
+- `docker pull` + `docker run` → contenedor arrancó y respondió en 127.0.0.1:3000.
 
-Pequeño texto profesional para usar en CV/Readme (opcional):
-"ExploraModelo — frontend educativo en Next.js construido para demostraciones reproducibles. CI automatizado con GitHub Actions publica imágenes Docker en GHCR para despliegue y pruebas locales; despliegue de frontend en Vercel. Ideal para workshops y evaluaciones técnicas."
+Problemas comunes y soluciones
+------------------------------
+- Puerto 3000 ocupado: `netstat -ano | findstr :3000` y termina proceso si es necesario.
+- Errores de CSS/PostCSS: instala `postcss` y `autoprefixer` en devDependencies y re-run `npm ci`.
+- Errores de permisos GHCR: asegúrate de un PAT con scope `read:packages`/`write:packages` para pulls privados o pushes.
 
-Verificación: imagen GHCR pública (comprobada)
-------------------------------------------------
-He verificado que la imagen publicada en GHCR está accesible y funciona localmente. Resumen de la comprobación local:
+Contacto/uso en CV
+------------------
+Texto sugerido (una línea):
 
-Comandos ejecutados (PowerShell):
-```powershell
-$img = 'ghcr.io/pablo-cubides/exploramodelo:docker'
-docker pull $img
-docker run --rm -d -p 127.0.0.1:3000:3000 --name exploramodelo $img
-docker ps -a
-docker logs exploramodelo
-```
+"ExploraModelo — demo educativa en Next.js con CI que publica imágenes Docker en GHCR para despliegue y pruebas locales."
 
-Resultado: la imagen se descargó correctamente y el contenedor arrancó, exponiendo la app en http://127.0.0.1:3000.
-
-Notas rápidas:
-- Asegúrate de escribir el owner en minúsculas (`pablo-cubides`) cuando uses `ghcr.io`.
-- Si tienes problemas con `docker pull`, comprueba el nombre y el tag del paquete en GitHub → Packages o autentica con un PAT que incluya `read:packages`.
+Si quieres, adapto el tono (más académico, técnico o comercial) y actualizo este `README.md`.
 

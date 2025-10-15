@@ -6,6 +6,7 @@ import { mapToBucketT, mapToBucketK, mapToBucketP, mapToBucketR, choosePattern }
 import ParameterSlider from '../components/ParameterSlider'
 import CaseSelector from '../components/CaseSelector'
 import ExampleList from '../components/ExampleList'
+import Badge from '../components/Badge'
 
 // Componentes auxiliares para la nueva estructura educativa
 function StepHeader({num, title}:{num:number; title:string}){
@@ -166,6 +167,20 @@ export default function Home(){
     J: 'Preciso y sin repeticiones: salidas concretas y enfocadas, evita redundancias.'
   }),[])
 
+  // Pattern metadata (levels: low/med/high) derived from your table
+  const patternMeta = useMemo(()=>({
+    A: { creativity:'low', coherence:'high', diversity:'low', repetitionControl:'medium' },
+    B: { creativity:'low', coherence:'high', diversity:'low', repetitionControl:'high' },
+    C: { creativity:'medium', coherence:'high', diversity:'medium', repetitionControl:'medium' },
+    D: { creativity:'high', coherence:'medium', diversity:'high', repetitionControl:'low' },
+    E: { creativity:'very-high', coherence:'low', diversity:'very-high', repetitionControl:'low' },
+    F: { creativity:'high', coherence:'medium', diversity:'high', repetitionControl:'high' },
+    G: { creativity:'high', coherence:'medium', diversity:'very-high', repetitionControl:'very-high' },
+    H: { creativity:'medium', coherence:'high', diversity:'medium', repetitionControl:'medium' },
+    I: { creativity:'very-high', coherence:'low', diversity:'high', repetitionControl:'low' },
+    J: { creativity:'low', coherence:'very-high', diversity:'low', repetitionControl:'very-high' }
+  } as const),[])
+
   return (
     <main className="max-w-7xl mx-auto p-8 text-white">
       <header className="mb-6 flex items-center gap-4">
@@ -300,6 +315,19 @@ export default function Home(){
                   <p className="mb-2 text-gray-300">Ajusta los parámetros y observa cómo cambia la respuesta en esa dirección (más creativo, más preciso, más equilibrado, o con mayor control contra repeticiones). Compara con los ejemplos académicos del paso anterior para entender la relación.</p>
                   <div className="p-4 bg-black/40 rounded border border-gray-800">
                     <p><strong>Interpretación del comportamiento:</strong> <span className="text-gray-200">{patternDescriptions[selectedPattern]}</span></p>
+                    <div className="mt-3 flex gap-2 flex-wrap">
+                      {(() => {
+                        const meta = (patternMeta as any)[selectedPattern]
+                        return (
+                          <>
+                            <Badge label="Creatividad" level={meta.creativity as any} />
+                            <Badge label="Coherencia" level={meta.coherence as any} />
+                            <Badge label="Diversidad" level={meta.diversity as any} />
+                            <Badge label="Control rep." level={meta.repetitionControl as any} />
+                          </>
+                        )
+                      })()}
+                    </div>
                   </div>
               </div>
 

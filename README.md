@@ -68,23 +68,86 @@ Notas técnicas de build
 docker run --rm -d -p 127.0.0.1:3000:3000 --name exploramodelo $img
 Ramas y despliegue
 ------------------
-- `main` — código fuente principal.
+# ExploraModelo
 
-Verificación rápida (chequeos que hicimos)
-----------------------------------------
-- `npm run build` (en `frontend/`) → build completado.
+Proyecto educativo (solo frontend) que muestra cómo cambia la sensación de la respuesta al variar parámetros de decodificación, sin depender de red ni backend.
 
-Problemas comunes y soluciones
-------------------------------
-- Puerto 3000 ocupado: `netstat -ano | findstr :3000` y termina proceso si es necesario.
-- Errores de CSS/PostCSS: instala `postcss` y `autoprefixer` en devDependencies y re-run `npm ci`.
-- Errores de permisos GHCR: asegúrate de un PAT con scope `read:packages`/`write:packages` para pulls privados o pushes.
+Estado actual
+------------
+- Frontend: Next.js 15 + TypeScript + Tailwind CSS.
+- Datos embebidos en `frontend/app/page.tsx` (demo determinista, sin fetch).
+- UI con tema oscuro/azul, efecto de tipeo y controles interactivos para Temperatura, Top-k, Top-p y Penalización por repetición.
 
-Contacto/uso en CV
-------------------
-Texto sugerido (una línea):
+Requisitos
+---------
+- Node.js >= 18
+- npm (o pnpm/yarn)
 
-"ExploraModelo — demo educativa en Next.js con CI que publica imágenes Docker en GHCR para despliegue y pruebas locales."
+Desarrollo local (Windows PowerShell)
+-----------------------------------
+Abre PowerShell y ejecuta:
 
-Si quieres, adapto el tono (más académico, técnico o comercial) y actualizo este `README.md`.
+```powershell
+cd frontend
+npm ci
+npm run dev:host   # desarrollo con hot-reload
+```
+
+Build y ejecución de producción (local)
+--------------------------------------
+En el directorio `frontend/`:
+
+```powershell
+npm run build
+npm run start:host  # arranca en http://127.0.0.1:3000
+```
+
+Despliegue recomendado
+----------------------
+Se recomienda desplegar en Vercel. Al crear el proyecto en Vercel, configura el "Root Directory" en `frontend/` (Vercel detectará automáticamente Next.js y realizará el build).
+
+Estructura importante
+---------------------
+- `frontend/` — código de la app (app-router). Contiene `package.json`, `app/`, `components/`, `data/` y `tests/`.
+- `backend/` — opcional; actualmente no se usa.
+
+Scripts útiles (en `frontend/`)
+----------------------------
+- Instalación:
+
+```powershell
+npm ci
+```
+
+- Desarrollo:
+
+```powershell
+npm run dev:host
+```
+
+- Tests (Vitest):
+
+```powershell
+npm run test -- --run
+```
+
+- Build / Start:
+
+```powershell
+npm run build
+npm run start:host
+```
+
+Notas técnicas
+-------------
+- Si el build reporta errores relacionados con PostCSS/autoprefixer instala las devDependencies necesarias y reintenta: `npm ci`.
+- La app está pensada para producción estática y no hace llamadas a APIs en tiempo de ejecución.
+
+Limpieza y CI
+-------------
+- Se eliminaron referencias a Docker/GHCR del README y la CI está configurada para ejecutar tests y build antes de desplegar.
+
+Contacto
+-------
+Si quieres que adapte el README a un tono más académico o que incluya instrucciones específicas para Docker/GHCR (si planeas volver a usar esas herramientas), dímelo y lo actualizo.
 

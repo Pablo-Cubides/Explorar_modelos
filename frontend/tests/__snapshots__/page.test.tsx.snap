@@ -1,0 +1,164 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Home component > should render correctly 1`] = `
+<div>
+  <main
+    class="max-w-7xl mx-auto p-8 text-white"
+  >
+    <header
+      class="mb-6 flex items-center gap-4"
+    >
+      <div
+        class="w-12 h-12 rounded-sm shadow-sm"
+        style="background-color: var(--primary);"
+      />
+      <div>
+        <h1
+          class="text-2xl md:text-3xl font-bold leading-tight"
+        >
+          ExploraModelo — Guía académica de parámetros de decodificación
+        </h1>
+        <p
+          class="text-sm text-gray-300 max-w-2xl"
+        >
+          Aplicación educativa para comprender y experimentar cómo los parámetros de muestreo afectan salidas de modelos de lenguaje.
+        </p>
+      </div>
+    </header>
+    <div
+      class="mb-6 stepper flex items-center gap-3"
+    >
+      <button
+        aria-label="Ir al paso 1"
+        class="step-dot bg-primary text-black"
+      >
+        1
+      </button>
+      <button
+        aria-label="Ir al paso 2"
+        class="step-dot bg-black/20 text-gray-300"
+      >
+        2
+      </button>
+      <button
+        aria-label="Ir al paso 3"
+        class="step-dot bg-black/20 text-gray-300"
+      >
+        3
+      </button>
+      <button
+        aria-label="Ir al paso 4"
+        class="step-dot bg-black/20 text-gray-300"
+      >
+        4
+      </button>
+      <div
+        class="ml-3 text-sm text-gray-400"
+      >
+        1 Qué es • 2 Parámetros • 3 Playground • 4 Bibliografía
+      </div>
+    </div>
+    <section
+      class="mb-8 animate-step"
+    >
+      <div
+        class="flex items-center gap-4 mb-4"
+      >
+        <div
+          class="w-10 h-10 rounded-full flex items-center justify-center bg-primary/90 text-black font-bold"
+        >
+          1
+        </div>
+        <h2
+          class="text-lg font-semibold"
+        >
+          ¿Qué hace esta app?
+        </h2>
+      </div>
+      <div
+        class="p-4 bg-surface/80 border border-gray-800 rounded mb-4"
+      >
+        <p
+          class="text-gray-300"
+        >
+          Esta aplicación es un recurso académico que demuestra, paso a paso, cómo los parámetros de decodificación (Temperatura, Top-k, Top-p y Penalización por repetición) influyen en la generación de texto por un LLM. Primero explicamos cada parámetro conceptualmente, luego mostramos ejemplos numéricos y, finalmente, permitimos experimentar con ejemplos prácticos (playground).
+        </p>
+      </div>
+      <div
+        class="space-y-3"
+      >
+        <div
+          class="p-4 border border-gray-800 rounded-lg bg-surface/80"
+        >
+          <h3
+            class="text-md font-semibold mb-2"
+          >
+            Temperatura
+          </h3>
+          <p
+            class="text-sm text-gray-300"
+          >
+            Controla la aleatoriedad en el muestreo: valores bajos (p.ej. 0.1) concentran probabilidad en el modo más probable; valores intermedios (~0.7) equilibran coherencia y variedad; valores altos (&gt;1.0) amplifican la diversidad y el riesgo de incoherencia.
+          </p>
+        </div>
+        <div
+          class="p-4 border border-gray-800 rounded-lg bg-surface/80"
+        >
+          <h3
+            class="text-md font-semibold mb-2"
+          >
+            Top-k
+          </h3>
+          <p
+            class="text-sm text-gray-300"
+          >
+            Limita el número absoluto de candidatos considerados en cada paso. Un k pequeño fuerza al modelo a elegir entre muy pocas opciones (salidas predecibles), un k grande permite mucha diversidad but puede introducir ruido.
+          </p>
+        </div>
+        <div
+          class="p-4 border border-gray-800 rounded-lg bg-surface/80"
+        >
+          <h3
+            class="text-md font-semibold mb-2"
+          >
+            Top-p
+          </h3>
+          <p
+            class="text-sm text-gray-300"
+          >
+            Selecciona el 'núcleo' probabilístico acumulado hasta alcanzar la masa p. A diferencia de top-k, top-p adapta el tamaño del conjunto según la distribución: útil para balance adaptativo entre seguridad y creatividad.
+          </p>
+        </div>
+        <div
+          class="p-4 border border-gray-800 rounded-lg bg-surface/80"
+        >
+          <h3
+            class="text-md font-semibold mb-2"
+          >
+            Penalización por repetición
+          </h3>
+          <p
+            class="text-sm text-gray-300"
+          >
+            Reduce la probabilidad de volver a escoger tokens ya generados, evitando bucles y muletillas; un valor moderado mejora diversidad sin sacrificar coherencia.
+          </p>
+        </div>
+      </div>
+      <div
+        class="mt-6 flex justify-end"
+      >
+        <button
+          class="btn btn-primary"
+        >
+          Siguiente
+        </button>
+      </div>
+    </section>
+    <footer
+      class="text-center text-sm text-gray-400 mt-8"
+    >
+      ExploraModelo — material educativo. Fondo negro para foco en contenido.
+    </footer>
+  </main>
+</div>
+`;

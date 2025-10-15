@@ -1,0 +1,11 @@
+{
+  "name": "exploramodelo",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "cd frontend && npm run dev:host",
+    "build": "cd frontend && npm run build",
+    "start": "cd frontend && npm run start:host",
+    "lint": "cd frontend && npm run lint"
+  }
+}

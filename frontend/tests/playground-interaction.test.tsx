@@ -1,4 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react'
+import { act } from 'react-dom/test-utils'
 import { describe, it, expect } from 'vitest'
 import Home from '../app/page'
 
@@ -13,21 +14,21 @@ describe('Playground interactions', () => {
   const desc = await screen.findByText(/Interpretación del comportamiento/i)
   expect(desc).toBeTruthy()
 
-    // move temperature slider to a low value (0.1) to push towards deterministic pattern
-    const tempSlider = screen.getByLabelText(/Temperatura/i) as HTMLInputElement
-    fireEvent.change(tempSlider, { target: { value: '0.1' } })
+  // move temperature slider to a low value (0.1) to push towards deterministic pattern
+  const tempSlider = screen.getByLabelText(/Temperatura/i) as HTMLInputElement
+  await act(async ()=>{ fireEvent.change(tempSlider, { target: { value: '0.1' } }) })
 
-    // Move top-k to a low value
-    const kSlider = screen.getByLabelText(/Top-k/i) as HTMLInputElement
-    fireEvent.change(kSlider, { target: { value: '3' } })
+  // Move top-k to a low value
+  const kSlider = screen.getByLabelText(/Top-k/i) as HTMLInputElement
+  await act(async ()=>{ fireEvent.change(kSlider, { target: { value: '3' } }) })
 
-    // Move top-p to a low value (0.15)
-    const pSlider = screen.getByLabelText(/Top-p/i) as HTMLInputElement
-    fireEvent.change(pSlider, { target: { value: '0.15' } })
+  // Move top-p to a low value (0.15)
+  const pSlider = screen.getByLabelText(/Top-p/i) as HTMLInputElement
+  await act(async ()=>{ fireEvent.change(pSlider, { target: { value: '0.15' } }) })
 
-    // Move repetition penalty to moderate
-    const rSlider = screen.getByLabelText(/Penalización por repetición/i) as HTMLInputElement
-    fireEvent.change(rSlider, { target: { value: '1.02' } })
+  // Move repetition penalty to moderate
+  const rSlider = screen.getByLabelText(/Penalización por repetición/i) as HTMLInputElement
+  await act(async ()=>{ fireEvent.change(rSlider, { target: { value: '1.02' } }) })
 
   // Now the description text should update to one that matches a low-creativity pattern (A/B/J etc.)
   const strong = await screen.findByText(/Interpretación del comportamiento:/i)

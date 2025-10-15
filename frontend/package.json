@@ -11,7 +11,9 @@
     "start:host": "next start -H 127.0.0.1 -p 3000",
     "lint": "next lint",
     "test": "vitest",
-    "test:ui": "vitest --ui"
+    "test:ui": "vitest --ui",
+  "axe:puppeteer": "node ./scripts/axe-puppeteer.js",
+  "axe:puppeteer-ext": "node ./scripts/axe-puppeteer-ext.js"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.14",
@@ -40,6 +42,7 @@
     "jsdom": "^27.0.0",
     "postcss": "^8.5.6",
     "prettier": "^2.8.8",
+    "puppeteer": "^24.24.1",
     "typescript": "5.3.3",
     "vitest": "^3.2.4"
   }

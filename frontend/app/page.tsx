@@ -285,7 +285,7 @@ export default function Home(){
 
           <div className="grid md:grid-cols-3 gap-6">
           <aside className="md:col-span-1 p-4 bg-surface/80 border border-gray-800 rounded">
-            <CaseSelector cases={cases} value={caseIndex} onChange={setCaseIndex} />
+            <CaseSelector cases={cases} value={caseIndex} onChange={setCaseIndex} id="case-select" />
 
             <div className="mt-4 space-y-4">
               <ParameterSlider label="Temperatura" value={temperature} min={0.05} max={1.3} step={0.01} onChange={v=>{ setTemperature(v); const idx=nearestIndexForExamples(academic.temperatura.examples,v); pulseHighlight(`temp-${idx}`) }} id="slider-temp" />

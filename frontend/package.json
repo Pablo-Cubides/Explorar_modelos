@@ -12,12 +12,14 @@
     "lint": "next lint",
     "test": "vitest",
     "test:ui": "vitest --ui",
+    "test:e2e": "playwright test",
     "axe:puppeteer": "node ./scripts/axe-puppeteer.js",
     "axe:puppeteer-ext": "node ./scripts/axe-puppeteer-ext.js"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.14",
     "@heroicons/react": "^2.0.18",
+    "@vercel/analytics": "^1.5.0",
     "html2canvas": "^1.4.1",
     "next": "^15.5.4",
     "react": "18.2.0",
@@ -26,6 +28,7 @@
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^13.5.0",
+    "@playwright/test": "^1.56.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",
     "@types/node": "24.3.0",

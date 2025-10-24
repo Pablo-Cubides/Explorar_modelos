@@ -17,6 +17,11 @@ Notas:
 - No hay dependencias de backend ni llamadas `fetch`.
 - Para desarrollo en caliente: `npm run dev:host`.
 - Si reintroduces un backend en el futuro, crea la carpeta `backend/` y documenta sus endpoints.
+
+## Documentación
+- [Guía de Usuario](./docs/user-guide.md) - Cómo usar la aplicación
+- [README Técnico](./README.md) - Detalles técnicos, desarrollo, CI
+
 # ExploraModelo — README técnico
 
 Resumen breve

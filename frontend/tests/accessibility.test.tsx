@@ -1,9 +1,8 @@
 import React from 'react'
-import { render } from '@testing-library/react'
+import { render, waitFor, screen } from '@testing-library/react'
 import { describe, it, expect, beforeAll } from 'vitest'
 import axe from 'axe-core'
 import Home from '../app/page'
-import { act } from 'react-dom/test-utils'
 
 // JSDOM in node does not implement canvas getContext; stub minimal implementation
 beforeAll(()=>{
@@ -24,9 +23,10 @@ function runAxe(container:HTMLElement){
 
 describe('accessibility', ()=>{
   it('has no critical accessibility violations (axe)', async ()=>{
-  let container:HTMLElement
-  await act(async ()=>{ const r = render(<Home />); container = r.container })
-  const results = await runAxe(container!)
+  const r = render(<Home />)
+  const container = r.container
+  await waitFor(() => expect(screen.getByText(/¿Qué hace esta app\?/i)).toBeInTheDocument())
+  const results = await runAxe(container)
     // filter only critical and serious
     const bad = results.violations.filter(v => v.impact === 'critical' || v.impact === 'serious')
     if(bad.length>0){

@@ -1,5 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react'
-import { act } from 'react-dom/test-utils'
+import { render, screen, fireEvent, act } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
 import Home from '../app/page'
 
@@ -8,7 +7,7 @@ describe('Playground interactions', () => {
     render(<Home />)
   // Open the Playground step (step 3) so the interactive panel is visible
   const step3 = screen.getByLabelText(/Ir al paso 3/i)
-  step3.click()
+  await act(async () => { step3.click() })
 
   // Now the pattern description should render inside the playground
   const desc = await screen.findByText(/Interpretación del comportamiento/i)

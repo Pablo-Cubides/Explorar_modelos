@@ -1,3 +1,5 @@
+/* eslint-env node */
+/* eslint-disable @typescript-eslint/no-var-requires */
 const puppeteer = require('puppeteer')
 const axeSource = require('axe-core').source
 

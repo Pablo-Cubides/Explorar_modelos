@@ -3,26 +3,48 @@ import React, { useEffect, useMemo, useState } from 'react'
 import data from '../data/cases'
 import type { DataRoot, CaseItem } from '../types/data'
 import { mapToBucketT, mapToBucketK, mapToBucketP, mapToBucketR, choosePattern } from '../utils/decoding'
-import ParameterSlider from '../components/ParameterSlider'
+import SliderEnhanced from '../components/SliderEnhanced'
 import CaseSelector from '../components/CaseSelector'
 import ExampleList from '../components/ExampleList'
 import Badge from '../components/Badge'
+import PatternRadarChart from '../components/PatternRadarChart'
+import PatternTimeline from '../components/PatternTimeline'
+import AcademicReferences from '../components/AcademicReferences'
+
+// Referencias académicas por parámetro para SEO y credibilidad
+const academicReferences = {
+  temperature: [
+    { title: 'Temperature in LLM Sampling', url: 'https://nlp.stanford.edu/blog/maximum-likelihood-decoding-with-rnns-the-good-the-bad-and-the-ugly/', source: 'Stanford NLP' },
+    { title: 'Temperature Parameter Guide', url: 'https://cloud.google.com/vertex-ai/generative-ai/docs/learn/prompts/adjust-parameter-values?hl=es-419', source: 'Google Vertex AI' },
+    { title: 'Understanding Temperature', url: 'https://learnprompting.org/es/docs/basics/configuration_hyperparameters', source: 'LearnPrompting' }
+  ],
+  topK: [
+    { title: 'Top-K Sampling for Generation', url: 'https://openreview.net/forum?id=rygGQyrFvH', source: 'OpenReview' },
+    { title: 'Neural Text Generation Paper', url: 'https://ar5iv.labs.arxiv.org/html/1904.09751', source: 'arXiv' },
+    { title: 'Top-K Glossary', url: 'https://dataforest.ai/glossary/top-k-sampling', source: 'DataForest' }
+  ],
+  topP: [
+    { title: 'Nucleus Sampling Paper', url: 'https://ar5iv.labs.arxiv.org/html/1904.09751', source: 'arXiv' }
+  ]
+}
 
 // Componentes auxiliares para la nueva estructura educativa
 function StepHeader({num, title}:{num:number; title:string}){
   return (
-    <div className="flex items-center gap-4 mb-4">
-      <div className="w-10 h-10 rounded-full flex items-center justify-center bg-primary/90 text-black font-bold">{num}</div>
-      <h2 className="text-lg font-semibold">{title}</h2>
+    <div className="flex items-center gap-4 mb-6 animate-slide-up">
+      <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-gradient-cyber text-black font-bold text-xl shadow-glow-cyan">
+        {num}
+      </div>
+      <h2 className="text-xl font-bold text-gradient">{title}</h2>
     </div>
   )
 }
 
 function ParamCard({title, summary}:{title:string; summary:string}){
   return (
-    <div className="p-4 border border-gray-800 rounded-lg bg-surface/80">
-      <h3 className="text-md font-semibold mb-2">{title}</h3>
-      <p className="text-sm text-gray-300">{summary}</p>
+    <div className="glass rounded-xl p-5 hover:scale-[1.02] transition-all duration-300 cursor-default border-2 border-transparent hover:border-primary/30">
+      <h3 className="text-md font-bold text-gradient mb-3">{title}</h3>
+      <p className="text-sm text-gray-300 leading-relaxed">{summary}</p>
     </div>
   )
 }
@@ -183,39 +205,71 @@ export default function Home(){
 
   return (
     <main className="max-w-7xl mx-auto p-8 text-white">
-      <header className="mb-6 flex items-center gap-4">
-        <div className="w-12 h-12 rounded-sm shadow-sm" style={{backgroundColor:'var(--primary)'}} />
-        <div>
-          <h1 className="text-2xl md:text-3xl font-bold leading-tight">ExploraModelo — Guía académica de parámetros de decodificación</h1>
-          <p className="text-sm text-gray-300 max-w-2xl">Aplicación educativa para comprender y experimentar cómo los parámetros de muestreo afectan salidas de modelos de lenguaje.</p>
+      <header className="mb-8 flex items-center gap-6 animate-slide-down">
+        <div className="w-16 h-16 rounded-2xl shadow-glow-cyan flex items-center justify-center bg-gradient-cyber animate-float">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+            <path d="M20 5L25 15L35 17L27 25L30 35L20 29L10 35L13 25L5 17L15 15L20 5Z" fill="currentColor" className="text-black" />
+          </svg>
+        </div>
+        <div className="flex-1">
+          <h1 className="text-3xl md:text-4xl font-bold leading-tight mb-2">
+            <span className="text-gradient">ExploraModelo</span>
+          </h1>
+          <p className="text-sm text-gray-400 max-w-3xl leading-relaxed">
+            Guía académica interactiva de parámetros de decodificación — Experimenta cómo Temperatura, Top-k, Top-p y Penalización afectan las salidas de modelos de lenguaje
+          </p>
         </div>
       </header>
 
       {/* Stepper */}
-      <div className="mb-6 stepper flex items-center gap-3">
+      <div className="mb-8 stepper">
         {[1,2,3,4].map(n=> (
-          <button key={n} onClick={()=>setActiveStep(n)} className={`step-dot ${activeStep===n ? 'bg-primary text-black' : 'bg-black/20 text-gray-300'}`} aria-label={`Ir al paso ${n}`}>{n}</button>
+          <button 
+            key={n} 
+            onClick={()=>setActiveStep(n)} 
+            className={`step-dot transition-all duration-300 ${activeStep===n ? 'bg-gradient-cyber text-black scale-110' : 'bg-white/5 text-gray-400 hover:bg-white/10'}`} 
+            aria-label={`Ir al paso ${n}`}
+          >
+            {n}
+          </button>
         ))}
-        <div className="ml-3 text-sm text-gray-400">1 Qué es • 2 Parámetros • 3 Playground • 4 Bibliografía</div>
+        <div className="ml-4 text-sm text-gray-400 hidden md:block">
+          <span className={activeStep === 1 ? 'text-primary font-semibold' : ''}>1 Qué es</span>
+          <span className="mx-2">•</span>
+          <span className={activeStep === 2 ? 'text-primary font-semibold' : ''}>2 Parámetros</span>
+          <span className="mx-2">•</span>
+          <span className={activeStep === 3 ? 'text-primary font-semibold' : ''}>3 Playground</span>
+          <span className="mx-2">•</span>
+          <span className={activeStep === 4 ? 'text-primary font-semibold' : ''}>4 Bibliografía</span>
+        </div>
       </div>
 
       {/* Step 1: Resumen general (parameters stacked under description) */}
       {activeStep===1 && (
         <section className="mb-8 animate-step"> 
           <StepHeader num={1} title="¿Qué hace esta app?" />
-          <div className="p-4 bg-surface/80 border border-gray-800 rounded mb-4">
-            <p className="text-gray-300">Esta aplicación es un recurso académico que demuestra, paso a paso, cómo los parámetros de decodificación (Temperatura, Top-k, Top-p y Penalización por repetición) influyen en la generación de texto por un LLM. Primero explicamos cada parámetro conceptualmente, luego mostramos ejemplos numéricos y, finalmente, permitimos experimentar con ejemplos prácticos (playground).</p>
+          <div className="glass-strong rounded-2xl p-6 mb-6 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-cyber opacity-5 blur-3xl rounded-full" />
+            <p className="text-gray-300 leading-relaxed relative z-10">
+              Esta aplicación es un recurso académico que demuestra, paso a paso, cómo los parámetros de decodificación 
+              (<span className="text-primary font-semibold">Temperatura</span>, 
+              <span className="text-secondary font-semibold"> Top-k</span>, 
+              <span className="text-accent font-semibold"> Top-p</span> y 
+              <span className="text-primary font-semibold"> Penalización por repetición</span>) influyen en la generación de texto por un LLM. 
+              Primero explicamos cada parámetro conceptualmente, luego mostramos ejemplos numéricos y, finalmente, 
+              permitimos experimentar con ejemplos prácticos (playground).
+            </p>
           </div>
 
-          <div className="space-y-3">
-            <ParamCard title="Temperatura" summary="Controla la aleatoriedad en el muestreo: valores bajos (p.ej. 0.1) concentran probabilidad en el modo más probable; valores intermedios (~0.7) equilibran coherencia y variedad; valores altos (>1.0) amplifican la diversidad y el riesgo de incoherencia." />
-            <ParamCard title="Top-k" summary="Limita el número absoluto de candidatos considerados en cada paso. Un k pequeño fuerza al modelo a elegir entre muy pocas opciones (salidas predecibles), un k grande permite mucha diversidad but puede introducir ruido." />
-            <ParamCard title="Top-p" summary="Selecciona el 'núcleo' probabilístico acumulado hasta alcanzar la masa p. A diferencia de top-k, top-p adapta el tamaño del conjunto según la distribución: útil para balance adaptativo entre seguridad y creatividad." />
-            <ParamCard title="Penalización por repetición" summary="Reduce la probabilidad de volver a escoger tokens ya generados, evitando bucles y muletillas; un valor moderado mejora diversidad sin sacrificar coherencia." />
+          <div className="grid md:grid-cols-2 gap-4">
+            <ParamCard title="🌡️ Temperatura" summary="Controla la aleatoriedad en el muestreo: valores bajos (p.ej. 0.1) concentran probabilidad en el modo más probable; valores intermedios (~0.7) equilibran coherencia y variedad; valores altos (>1.0) amplifican la diversidad y el riesgo de incoherencia." />
+            <ParamCard title="🔢 Top-k" summary="Limita el número absoluto de candidatos considerados en cada paso. Un k pequeño fuerza al modelo a elegir entre muy pocas opciones (salidas predecibles), un k grande permite mucha diversidad but puede introducir ruido." />
+            <ParamCard title="🎯 Top-p" summary="Selecciona el 'núcleo' probabilístico acumulado hasta alcanzar la masa p. A diferencia de top-k, top-p adapta el tamaño del conjunto según la distribución: útil para balance adaptativo entre seguridad y creatividad." />
+            <ParamCard title="🔄 Penalización por repetición" summary="Reduce la probabilidad de volver a escoger tokens ya generados, evitando bucles y muletillas; un valor moderado mejora diversidad sin sacrificar coherencia." />
           </div>
 
-          <div className="mt-6 flex justify-end">
-            <button onClick={()=>setActiveStep(2)} className="btn btn-primary">Siguiente</button>
+          <div className="mt-8 flex justify-end">
+            <button onClick={()=>setActiveStep(2)} className="btn btn-primary">Siguiente →</button>
           </div>
         </section>
       )}
@@ -226,50 +280,89 @@ export default function Home(){
           <StepHeader num={2} title="Parámetros — explicación detallada y ejemplos" />
           <div className="space-y-6">
             {subStep===0 && (
-              <div className="p-6 bg-surface/90 border border-gray-800 rounded">
-                <h3 className="text-lg font-semibold mb-2">Temperatura</h3>
-                <p className="text-sm text-gray-300 mb-3">{academic.temperatura.summary} En esta sección profundizamos en cómo la temperatura afecta la distribución de probabilidad y ejemplos prácticos de cuándo ajustar T para tareas específicas (e.g., redacción formal vs brainstorming).</p>
+              <div className="glass-strong rounded-2xl p-8 animate-scale-in">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-cyber flex items-center justify-center text-black text-2xl font-bold">
+                    🌡️
+                  </div>
+                  <h3 className="text-2xl font-bold text-gradient">Temperatura</h3>
+                </div>
+                <p className="text-sm text-gray-300 mb-6 leading-relaxed">{academic.temperatura.summary} En esta sección profundizamos en cómo la temperatura afecta la distribución de probabilidad y ejemplos prácticos de cuándo ajustar T para tareas específicas (e.g., redacción formal vs brainstorming).</p>
+                
+                {/* Referencias académicas */}
+                <div className="mb-6">
+                  <AcademicReferences links={academicReferences.temperature} compact />
+                </div>
+                
                 <ExampleList examples={academic.temperatura.examples} highlighted={highlighted ? highlighted.replace('temp-','') : null} />
-                <div className="mt-4 flex justify-between">
-                  <button onClick={()=>setSubStep(1)} className="btn btn-primary">Siguiente: Top-k</button>
+                <div className="mt-6 flex justify-between">
+                  <div></div>
+                  <button onClick={()=>setSubStep(1)} className="btn btn-primary">Siguiente: Top-k →</button>
                 </div>
               </div>
             )}
 
             {subStep===1 && (
-              <div className="p-6 bg-surface/90 border border-gray-800 rounded">
-                <h3 className="text-lg font-semibold mb-2">Top‑k</h3>
-                <p className="text-sm text-gray-300 mb-3">{academic.topk.summary} Aquí profundizamos en el trade-off entre control y diversidad al fijar un k fijo, y ejemplos de ajustes para tareas de completado o generación controlada.</p>
+              <div className="glass-strong rounded-2xl p-8 animate-scale-in">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-cyber flex items-center justify-center text-black text-2xl font-bold">
+                    🔢
+                  </div>
+                  <h3 className="text-2xl font-bold text-gradient">Top‑k</h3>
+                </div>
+                <p className="text-sm text-gray-300 mb-6 leading-relaxed">{academic.topk.summary} Aquí profundizamos en el trade-off entre control y diversidad al fijar un k fijo, y ejemplos de ajustes para tareas de completado o generación controlada.</p>
+                
+                {/* Referencias académicas */}
+                <div className="mb-6">
+                  <AcademicReferences links={academicReferences.topK} compact />
+                </div>
+                
                 <ExampleList examples={academic.topk.examples} highlighted={highlighted ? highlighted.replace('k-','') : null} />
-                <div className="mt-4 flex justify-between">
-                  <button onClick={()=>setSubStep(0)} className="btn btn-ghost">Anterior: Temperatura</button>
-                  <button onClick={()=>setSubStep(2)} className="btn btn-primary">Siguiente: Top-p</button>
+                <div className="mt-6 flex justify-between">
+                  <button onClick={()=>setSubStep(0)} className="btn btn-ghost">← Anterior: Temperatura</button>
+                  <button onClick={()=>setSubStep(2)} className="btn btn-primary">Siguiente: Top-p →</button>
                 </div>
               </div>
             )}
 
             {subStep===2 && (
-              <div className="p-6 bg-surface/90 border border-gray-800 rounded">
-                <h3 className="text-lg font-semibold mb-2">Top‑p</h3>
-                <p className="text-sm text-gray-300 mb-3">{academic.topp.summary} Profundizamos en cómo el núcleo adaptativo evita forzar un tamaño fijo y ejemplos prácticos para diferentes tareas (resumen, diálogo, creatividad).</p>
+              <div className="glass-strong rounded-2xl p-8 animate-scale-in">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-cyber flex items-center justify-center text-black text-2xl font-bold">
+                    🎯
+                  </div>
+                  <h3 className="text-2xl font-bold text-gradient">Top‑p</h3>
+                </div>
+                <p className="text-sm text-gray-300 mb-6 leading-relaxed">{academic.topp.summary} Profundizamos en cómo el núcleo adaptativo evita forzar un tamaño fijo y ejemplos prácticos para diferentes tareas (resumen, diálogo, creatividad).</p>
+                
+                {/* Referencias académicas */}
+                <div className="mb-6">
+                  <AcademicReferences links={academicReferences.topP} compact />
+                </div>
+                
                 <ExampleList examples={academic.topp.examples} highlighted={highlighted ? highlighted.replace('p-','') : null} />
-                <div className="mt-4 flex justify-between">
-                  <button onClick={()=>setSubStep(1)} className="btn btn-ghost">Anterior: Top-k</button>
-                  <button onClick={()=>setSubStep(3)} className="btn btn-primary">Siguiente: Repetición</button>
+                <div className="mt-6 flex justify-between">
+                  <button onClick={()=>setSubStep(1)} className="btn btn-ghost">← Anterior: Top-k</button>
+                  <button onClick={()=>setSubStep(3)} className="btn btn-primary">Siguiente: Repetición →</button>
                 </div>
               </div>
             )}
 
             {subStep===3 && (
-              <div className="p-6 bg-surface/90 border border-gray-800 rounded">
-                <h3 className="text-lg font-semibold mb-2">Penalización por repetición</h3>
-                <p className="text-sm text-gray-300 mb-3">{academic.repetition.summary} Estrategias para ajustar la penalización y ejemplos sobre cómo evitar repeticiones sin perder coherencia semántica.</p>
+              <div className="glass-strong rounded-2xl p-8 animate-scale-in">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-cyber flex items-center justify-center text-black text-2xl font-bold">
+                    🔄
+                  </div>
+                  <h3 className="text-2xl font-bold text-gradient">Penalización por repetición</h3>
+                </div>
+                <p className="text-sm text-gray-300 mb-6 leading-relaxed">{academic.repetition.summary} Estrategias para ajustar la penalización y ejemplos sobre cómo evitar repeticiones sin perder coherencia semántica.</p>
                 <ExampleList examples={academic.repetition.examples} highlighted={highlighted ? highlighted.replace('r-','') : null} />
-                <div className="mt-4 flex justify-between">
-                  <button onClick={()=>setSubStep(2)} className="btn btn-ghost">Anterior: Top-p</button>
-                  <div className="flex gap-2">
+                <div className="mt-6 flex justify-between">
+                  <button onClick={()=>setSubStep(2)} className="btn btn-ghost">← Anterior: Top-p</button>
+                  <div className="flex gap-3">
                     <button onClick={()=>setSubStep(0)} className="btn btn-ghost">Revisar desde el inicio</button>
-                    <button onClick={()=>{ setActiveStep(3); setSubStep(0) }} className="btn btn-primary">Ir al Playground</button>
+                    <button onClick={()=>{ setActiveStep(3); setSubStep(0) }} className="btn btn-primary">Ir al Playground →</button>
                   </div>
                 </div>
               </div>
@@ -283,82 +376,206 @@ export default function Home(){
         <section className="mb-12 animate-step">
           <StepHeader num={3} title="Playground — prueba y observa" />
 
-          <div className="grid md:grid-cols-3 gap-6">
-          <aside className="md:col-span-1 p-4 bg-surface/80 border border-gray-800 rounded">
-            <CaseSelector cases={cases} value={caseIndex} onChange={setCaseIndex} id="case-select" />
-
-            <div className="mt-4 space-y-4">
-              <ParameterSlider label="Temperatura" value={temperature} min={0.05} max={1.3} step={0.01} onChange={v=>{ setTemperature(v); const idx=nearestIndexForExamples(academic.temperatura.examples,v); pulseHighlight(`temp-${idx}`) }} id="slider-temp" />
-
-              <ParameterSlider label="Top-k" value={topK} min={1} max={150} step={1} onChange={v=>{ setTopK(Math.round(v)); const idx=nearestIndexForExamples(academic.topk.examples,v); pulseHighlight(`k-${idx}`) }} id="slider-k" />
-
-              <ParameterSlider label="Top-p" value={topP} min={0.10} max={1.0} step={0.01} onChange={v=>{ setTopP(v); const idx=nearestIndexForExamples(academic.topp.examples,v); pulseHighlight(`p-${idx}`) }} id="slider-p" />
-
-              <ParameterSlider label="Penalización por repetición" value={repetitionPenalty} min={1.00} max={2.00} step={0.01} onChange={v=>{ setRepetitionPenalty(v); const idx=nearestIndexForExamples(academic.repetition.examples,v); pulseHighlight(`r-${idx}`) }} id="slider-r" />
-            </div>
-          </aside>
-
-          <div className="md:col-span-2 p-6 bg-surface/90 border border-gray-800 rounded">
-            <p className="text-sm italic text-gray-400">{currentCase.title}...</p>
-            <div aria-live="polite" role="status" className="mt-4 text-2xl md:text-3xl leading-relaxed font-medium whitespace-pre-wrap min-h-[8rem]">
-              {displayed}
-              <span className={`inline-block w-1.5 h-6 ml-1 align-baseline ${isTyping ? 'bg-primary animate-pulse' : 'bg-transparent'}`} aria-hidden />
-            </div>
-
-            <div className="flex gap-3 mt-5">
-              <button onClick={exportPNG} className="px-3 py-2 text-white rounded bg-primary/90 hover:bg-primary">Exportar PNG</button>
-              <button onClick={downloadJSON} className="px-3 py-2 border border-gray-700 rounded bg-black/30">Descargar JSON</button>
-              <button onClick={()=>{ setDisplayed(""); setTypingSeed(s=>s+1) }} className="px-3 py-2 border border-gray-700 rounded bg-black/30">Reproducir</button>
-            </div>
-
-              <div className="mt-6 text-sm text-gray-300">
-                  <p className="mb-2 text-gray-300">Ajusta los parámetros y observa cómo cambia la respuesta en esa dirección (más creativo, más preciso, más equilibrado, o con mayor control contra repeticiones). Compara con los ejemplos académicos del paso anterior para entender la relación.</p>
-                  <div className="p-4 bg-black/40 rounded border border-gray-800">
-                    <p><strong>Interpretación del comportamiento:</strong> <span className="text-gray-200">{patternDescriptions[selectedPattern]}</span></p>
-                    <div className="mt-3 flex gap-2 flex-wrap">
-                      {(() => {
-                        const meta = (patternMeta as any)[selectedPattern]
-                        return (
-                          <>
-                            <Badge label="Creatividad" level={meta.creativity as any} />
-                            <Badge label="Coherencia" level={meta.coherence as any} />
-                            <Badge label="Diversidad" level={meta.diversity as any} />
-                            <Badge label="Control rep." level={meta.repetitionControl as any} />
-                          </>
-                        )
-                      })()}
-                    </div>
-                  </div>
-              </div>
-
-              <div className="mt-6 flex justify-between">
-                <button onClick={()=>setActiveStep(2)} className="btn btn-ghost">Anterior</button>
-                <button onClick={()=>setActiveStep(4)} className="btn btn-primary">Siguiente</button>
-              </div>
+          {/* Pattern Timeline */}
+          <div className="mb-6">
+            <PatternTimeline 
+              currentPattern={selectedPattern} 
+              patterns={['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']} 
+            />
           </div>
-        </div>
-          </section>
-        )}
 
-      <footer className="text-center text-sm text-gray-400 mt-8">ExploraModelo — material educativo. Fondo negro para foco en contenido.</footer>
+          <div className="grid lg:grid-cols-3 gap-6">
+            {/* Panel lateral de controles */}
+            <aside className="lg:col-span-1 space-y-6">
+              {/* Selector de casos */}
+              <div className="glass rounded-xl p-5">
+                <CaseSelector cases={cases} value={caseIndex} onChange={setCaseIndex} id="case-select" />
+              </div>
 
-      {/* Step 4: Bibliografía / Referencias - página dedicada */}
-      {activeStep===4 && (
-        <section className="mt-6 text-left text-sm text-gray-300 animate-step">
-          <StepHeader num={4} title="Bibliografía y referencias" />
-          <ul className="list-disc ml-5 space-y-2">
-            <li><a className="text-primary" href="https://arxiv.org/abs/1904.09751" target="_blank" rel="noreferrer">Holtzman et al., The Curious Case of Neural Text Degeneration (nucleus sampling) — 2019</a></li>
-            <li><a className="text-primary" href="https://arxiv.org/abs/1705.02364" target="_blank" rel="noreferrer">Fan et al., Strategies for Diverse and Controllable Text Generation — 2018</a></li>
-            <li><a className="text-primary" href="https://arxiv.org/abs/2005.14165" target="_blank" rel="noreferrer">Keskar et al., CTRL: A Conditional Transformer Language Model for Controllable Generation — 2019</a></li>
-            <li><a className="text-primary" href="https://blog.openai.com/better-language-models/" target="_blank" rel="noreferrer">OpenAI blog: Better Language Models and Their Implications</a></li>
-            <li><a className="text-primary" href="https://arxiv.org/abs/2102.09690" target="_blank" rel="noreferrer">Pahuja et al., On the Role of Sampling Strategies in Text Generation — 2021</a></li>
-          </ul>
-          <div className="mt-6 flex justify-between">
-            <button onClick={()=>setActiveStep(3)} className="btn btn-ghost">Anterior</button>
-            <button onClick={()=>setActiveStep(1)} className="btn btn-primary">Volver al inicio</button>
+              {/* Radar Chart */}
+              <PatternRadarChart 
+                temperature={temperature}
+                topK={topK}
+                topP={topP}
+                repetitionPenalty={repetitionPenalty}
+              />
+
+              {/* Sliders */}
+              <div className="glass rounded-xl p-5 space-y-6">
+                <h3 className="text-sm font-bold text-gradient mb-4">Parámetros de Decodificación</h3>
+                
+                <SliderEnhanced 
+                  label="Temperatura" 
+                  value={temperature} 
+                  min={0.05} 
+                  max={1.3} 
+                  step={0.01} 
+                  onChange={v=>{ setTemperature(v); const idx=nearestIndexForExamples(academic.temperatura.examples,v); pulseHighlight(`temp-${idx}`) }} 
+                  id="slider-temp"
+                  description="Controla la aleatoriedad en el muestreo"
+                  optimalRange={[0.6, 0.8]}
+                />
+
+                <SliderEnhanced 
+                  label="Top-k" 
+                  value={topK} 
+                  min={1} 
+                  max={150} 
+                  step={1} 
+                  onChange={v=>{ setTopK(Math.round(v)); const idx=nearestIndexForExamples(academic.topk.examples,v); pulseHighlight(`k-${idx}`) }} 
+                  id="slider-k"
+                  description="Limita candidatos a los k más probables"
+                  optimalRange={[40, 60]}
+                />
+
+                <SliderEnhanced 
+                  label="Top-p" 
+                  value={topP} 
+                  min={0.10} 
+                  max={1.0} 
+                  step={0.01} 
+                  onChange={v=>{ setTopP(v); const idx=nearestIndexForExamples(academic.topp.examples,v); pulseHighlight(`p-${idx}`) }} 
+                  id="slider-p"
+                  description="Selecciona núcleo probabilístico acumulativo"
+                  optimalRange={[0.85, 0.95]}
+                />
+
+                <SliderEnhanced 
+                  label="Penalización" 
+                  value={repetitionPenalty} 
+                  min={1.00} 
+                  max={2.00} 
+                  step={0.01} 
+                  onChange={v=>{ setRepetitionPenalty(v); const idx=nearestIndexForExamples(academic.repetition.examples,v); pulseHighlight(`r-${idx}`) }} 
+                  id="slider-r"
+                  description="Reduce probabilidad de tokens repetidos"
+                  optimalRange={[1.1, 1.3]}
+                />
+              </div>
+            </aside>
+
+            {/* Panel principal de visualización */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Card de texto generado */}
+              <div className="glass-strong rounded-2xl p-8 relative overflow-hidden gradient-border">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-cyber opacity-10 blur-3xl rounded-full" />
+                
+                <div className="relative z-10">
+                  <p className="text-xs uppercase tracking-wider text-primary/80 mb-2 font-bold">Caso de ejemplo</p>
+                  <p className="text-sm italic text-gray-400 mb-4">{currentCase.title}...</p>
+                  
+                  <div aria-live="polite" role="status" className="mt-6 text-2xl md:text-3xl leading-relaxed font-medium whitespace-pre-wrap min-h-[10rem]">
+                    {displayed}
+                    <span className={`inline-block w-1.5 h-7 ml-1 align-baseline rounded-full ${isTyping ? 'bg-gradient-cyber animate-pulse' : 'bg-transparent'}`} aria-hidden />
+                  </div>
+                </div>
+              </div>
+
+              {/* Botones de acción */}
+              <div className="flex flex-wrap gap-3">
+                <button onClick={exportPNG} className="btn btn-primary flex items-center gap-2">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M8 11L4 7h2.5V2h3v5H12L8 11z" fill="currentColor"/>
+                    <path d="M14 14H2v-2h12v2z" fill="currentColor"/>
+                  </svg>
+                  Exportar PNG
+                </button>
+                <button onClick={downloadJSON} className="btn btn-ghost flex items-center gap-2">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M3 3h10M3 8h10M3 13h10" stroke="currentColor" strokeWidth="2"/>
+                  </svg>
+                  Descargar JSON
+                </button>
+                <button onClick={()=>{ setDisplayed(""); setTypingSeed(s=>s+1) }} className="btn btn-ghost flex items-center gap-2">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M14 8c0-3.3-2.7-6-6-6S2 4.7 2 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                    <path d="M2 8l2-2M2 8l2 2" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                  </svg>
+                  Reproducir
+                </button>
+              </div>
+
+              {/* Interpretación del comportamiento */}
+              <div className="glass rounded-xl p-6">
+                <h3 className="text-lg font-bold text-gradient mb-3">Interpretación del Patrón {selectedPattern}</h3>
+                <p className="text-gray-300 leading-relaxed mb-4">{patternDescriptions[selectedPattern]}</p>
+                
+                <div className="flex gap-2 flex-wrap">
+                  {(() => {
+                    const meta = (patternMeta as any)[selectedPattern]
+                    return (
+                      <>
+                        <Badge label="Creatividad" level={meta.creativity as any} />
+                        <Badge label="Coherencia" level={meta.coherence as any} />
+                        <Badge label="Diversidad" level={meta.diversity as any} />
+                        <Badge label="Control rep." level={meta.repetitionControl as any} />
+                      </>
+                    )
+                  })()}
+                </div>
+              </div>
+
+              {/* Navegación */}
+              <div className="flex justify-between">
+                <button onClick={()=>setActiveStep(2)} className="btn btn-ghost">← Anterior</button>
+                <button onClick={()=>setActiveStep(4)} className="btn btn-primary">Siguiente →</button>
+              </div>
+            </div>
           </div>
         </section>
       )}
+
+      {/* Step 4: Bibliografía / Referencias - página dedicada */}
+      {activeStep===4 && (
+        <section className="animate-step">
+          <StepHeader num={4} title="Bibliografía y referencias" />
+          <div className="glass-strong rounded-2xl p-8">
+            <ul className="space-y-4">
+              {[
+                { title: 'Holtzman et al., The Curious Case of Neural Text Degeneration (nucleus sampling) — 2019', url: 'https://arxiv.org/abs/1904.09751' },
+                { title: 'Fan et al., Strategies for Diverse and Controllable Text Generation — 2018', url: 'https://arxiv.org/abs/1705.02364' },
+                { title: 'Keskar et al., CTRL: A Conditional Transformer Language Model for Controllable Generation — 2019', url: 'https://arxiv.org/abs/2005.14165' },
+                { title: 'OpenAI blog: Better Language Models and Their Implications', url: 'https://blog.openai.com/better-language-models/' },
+                { title: 'Pahuja et al., On the Role of Sampling Strategies in Text Generation — 2021', url: 'https://arxiv.org/abs/2102.09690' }
+              ].map((ref, i) => (
+                <li key={i} className="flex items-start gap-3 group">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-cyber flex items-center justify-center text-black font-bold flex-shrink-0 mt-0.5">
+                    {i + 1}
+                  </div>
+                  <a 
+                    className="text-primary hover:text-secondary transition-colors duration-300 group-hover:translate-x-1 transform flex-1" 
+                    href={ref.url} 
+                    target="_blank" 
+                    rel="noreferrer"
+                  >
+                    {ref.title}
+                    <svg className="inline-block ml-2 w-4 h-4 opacity-50 group-hover:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="mt-8 flex justify-between">
+            <button onClick={()=>setActiveStep(3)} className="btn btn-ghost">← Anterior</button>
+            <button onClick={()=>setActiveStep(1)} className="btn btn-primary">🏠 Volver al inicio</button>
+          </div>
+        </section>
+      )}
+
+      <footer className="text-center text-sm text-gray-500 mt-16 pb-8 border-t border-white/5 pt-8">
+        <div className="flex items-center justify-center gap-2 mb-3">
+          <div className="w-8 h-8 rounded-lg bg-gradient-cyber flex items-center justify-center">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M10 2L12 8L18 9L14 13L15 19L10 15L5 19L6 13L2 9L8 8L10 2Z" fill="currentColor" className="text-black" />
+            </svg>
+          </div>
+          <span className="font-bold text-gradient">ExploraModelo</span>
+        </div>
+        <p>Material educativo sobre parámetros de decodificación en LLMs</p>
+        <p className="mt-2 text-xs text-gray-600">Diseñado con foco en accesibilidad y experiencia de aprendizaje</p>
+      </footer>
     </main>
   )
 }
